@@ -54,7 +54,6 @@ namespace Bank
             Einzahlen(-betrag);
         }
 
-        [MethodImpl(MethodImplOptions.InternalCall)]
         public decimal Schließen()
         {
             if (this is null)
@@ -64,17 +63,14 @@ namespace Bank
 
             decimal betrag = Guthaben;
 
-            IntPtr i = Marshal.AllocHGlobal(Marshal.SizeOf(Guthaben));
             IntPtr thisRef = Marshal.AllocHGlobal(Marshal.SizeOf(this));
 
             try
             {
-                Marshal.StructureToPtr(Guthaben, i, true);
                 Marshal.StructureToPtr(this, thisRef, true);
             }
             finally
             {
-                Marshal.FreeHGlobal(i);
                 Marshal.FreeHGlobal(thisRef);
             }
 
