@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace Bank
 {
@@ -40,7 +41,44 @@ namespace Bank
 
         public void Auszahlen(decimal betrag)
         {
-            if (betrag > 0) Einzahlen(-betrag);
+            if (Guthaben - betrag < 0)
+            {
+                throw new ArgumentOutOfRangeException("Nicht genug Guthaben");
+            }
+
+            if (betrag <= 0)
+            {
+                throw new ArgumentOutOfRangeException("Ungültiger Betrag");
+            }
+
+            Einzahlen(-betrag);
+        }
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        public decimal Schließen()
+        {
+            if (this is null)
+            {
+                return 0;
+            }
+
+            decimal betrag = Guthaben;
+
+            IntPtr i = Marshal.AllocHGlobal(Marshal.SizeOf(Guthaben));
+            IntPtr thisRef = Marshal.AllocHGlobal(Marshal.SizeOf(this));
+
+            try
+            {
+                Marshal.StructureToPtr(Guthaben, i, true);
+                Marshal.StructureToPtr(this, thisRef, true);
+            }
+            finally
+            {
+                Marshal.FreeHGlobal(i);
+                Marshal.FreeHGlobal(thisRef);
+            }
+
+            return betrag;
         }
     }
 }
