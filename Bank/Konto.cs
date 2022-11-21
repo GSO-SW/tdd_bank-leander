@@ -1,39 +1,46 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 
 namespace Bank
 {
-    internal class Konto
+    internal sealed class Konto
     {
-        private int guthaben;
-
-        public int Guthaben
+        public decimal Guthaben
         {
-            get
+            get;
+            private set;
+        }
+
+        public Konto(decimal startGuthaben = 0)
+        {
+            checked
             {
-                return guthaben;
+                Guthaben = startGuthaben switch
+                {
+                    >= 0 => Guthaben,
+                    _ => throw new ArgumentOutOfRangeException("Der Betrag muss positiv oder 0 sein")
+                }; 
             }
         }
 
-        public Konto(int guthaben)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Konto Eröffnen(decimal startGuthaben = 0)
         {
-            this.guthaben = guthaben;
+            return new Konto(startGuthaben);
         }
 
-        public void Einzahlen(int betrag)
+        [MethodImpl(MethodImplOptions.Synchronized)]
+        public void Einzahlen(decimal betrag)
         {
-            guthaben += betrag;
+            checked
+            {
+                Guthaben += betrag;
+            }
         }
 
-        public void Auszahlen(int betrag)
+        public void Auszahlen(decimal betrag)
         {
-            if (guthaben >= betrag)
-            {
-                guthaben -= betrag;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Guthaben nicht ausreichend");
-            }
+            if (betrag > 0) Einzahlen(-betrag);
         }
     }
 }
