@@ -4,7 +4,8 @@ using System.Runtime.InteropServices;
 
 namespace Bank
 {
-    internal sealed class Konto
+    [StructLayout(LayoutKind.Sequential)]
+    public sealed class Konto
     {
         public decimal Guthaben
         {
@@ -18,7 +19,7 @@ namespace Bank
             {
                 Guthaben = startGuthaben switch
                 {
-                    >= 0 => Guthaben,
+                    >= 0 => startGuthaben,
                     _ => throw new ArgumentOutOfRangeException("Der Betrag muss positiv oder 0 sein")
                 }; 
             }
@@ -63,29 +64,33 @@ namespace Bank
 
             decimal betrag = Guthaben;
 
-            IntPtr thisRef = IntPtr.Zero;
+            Guthaben = 0;
 
-            try
-            {
-                thisRef = Marshal.AllocHGlobal(Marshal.SizeOf(this));
+            #region Muss überarbeitet werden
+            //IntPtr thisRef = IntPtr.Zero;
 
-                Marshal.StructureToPtr(this, thisRef, true);
-            }
-            catch (AccessViolationException)
-            {
-                return 0;
-            }
-            catch (OutOfMemoryException)
-            {
-                return 0;
-            }
-            finally
-            {
-                if (thisRef != IntPtr.Zero)
-                {
-                    Marshal.FreeHGlobal(thisRef);
-                }
-            }
+            //try
+            //{
+            //    thisRef = Marshal.AllocHGlobal(Unsafe.SizeOf<Konto>());
+
+            //    Marshal.StructureToPtr(this, thisRef, true);
+            //}
+            //catch (AccessViolationException)
+            //{
+            //    return 0;
+            //}
+            //catch (OutOfMemoryException)
+            //{
+            //    return 0;
+            //}
+            //finally
+            //{
+            //    if (thisRef != IntPtr.Zero)
+            //    {
+            //        Marshal.FreeHGlobal(thisRef);
+            //    }
+            //} 
+            #endregion
 
             return betrag;
         }
