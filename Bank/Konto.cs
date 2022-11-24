@@ -1,39 +1,93 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace Bank
 {
-    internal class Konto
+    internal sealed class Konto
     {
-        private int guthaben;
-
-        public int Guthaben
+        public decimal Guthaben
         {
-            get
+            get;
+            private set;
+        }
+
+        public Konto(decimal startGuthaben = 0)
+        {
+            checked
             {
-                return guthaben;
+                Guthaben = startGuthaben switch
+                {
+                    >= 0 => Guthaben,
+                    _ => throw new ArgumentOutOfRangeException("Der Betrag muss positiv oder 0 sein")
+                }; 
             }
         }
 
-        public Konto(int guthaben)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Konto Eröffnen(decimal startGuthaben = 0)
         {
-            this.guthaben = guthaben;
+            return new Konto(startGuthaben);
         }
 
-        public void Einzahlen(int betrag)
+        [MethodImpl(MethodImplOptions.Synchronized)]
+        public void Einzahlen(decimal betrag)
         {
-            guthaben += betrag;
+            checked
+            {
+                Guthaben += betrag;
+            }
         }
 
-        public void Auszahlen(int betrag)
+        public void Auszahlen(decimal betrag)
         {
-            if (guthaben >= betrag)
+            if (Guthaben - betrag < 0)
             {
-                guthaben -= betrag;
+                throw new ArgumentOutOfRangeException("Nicht genug Guthaben");
             }
-            else
+
+            if (betrag <= 0)
             {
-                throw new ArgumentOutOfRangeException("Guthaben nicht ausreichend");
+                throw new ArgumentOutOfRangeException("Ungültiger Betrag");
             }
+
+            Einzahlen(-betrag);
+        }
+
+        public decimal Schließen()
+        {
+            if (this is null)
+            {
+                return 0;
+            }
+
+            decimal betrag = Guthaben;
+
+            IntPtr thisRef = IntPtr.Zero;
+
+            try
+            {
+                thisRef = Marshal.AllocHGlobal(Marshal.SizeOf(this));
+
+                Marshal.StructureToPtr(this, thisRef, true);
+            }
+            catch (AccessViolationException)
+            {
+                return 0;
+            }
+            catch (OutOfMemoryException)
+            {
+                return 0;
+            }
+            finally
+            {
+                if (thisRef != IntPtr.Zero)
+                {
+                    Marshal.FreeHGlobal(thisRef);
+                }
+            }
+
+            return betrag;
         }
     }
 }
