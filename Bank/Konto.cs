@@ -63,15 +63,28 @@ namespace Bank
 
             decimal betrag = Guthaben;
 
-            IntPtr thisRef = Marshal.AllocHGlobal(Marshal.SizeOf(this));
+            IntPtr thisRef = IntPtr.Zero;
 
             try
             {
+                thisRef = Marshal.AllocHGlobal(Marshal.SizeOf(this));
+
                 Marshal.StructureToPtr(this, thisRef, true);
+            }
+            catch (AccessViolationException)
+            {
+                return 0;
+            }
+            catch (OutOfMemoryException)
+            {
+                return 0;
             }
             finally
             {
-                Marshal.FreeHGlobal(thisRef);
+                if (thisRef != IntPtr.Zero)
+                {
+                    Marshal.FreeHGlobal(thisRef);
+                }
             }
 
             return betrag;
