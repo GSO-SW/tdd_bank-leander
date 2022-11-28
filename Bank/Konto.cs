@@ -25,18 +25,9 @@ namespace Bank
 
             Guthaben = startGuthaben switch
             {
-<<<<<<< HEAD
-                Guthaben = startGuthaben switch
-                {
-                    >= 0 => startGuthaben,
-                    _ => throw new ArgumentOutOfRangeException("Der Betrag muss positiv oder 0 sein")
-                }; 
-            }
-=======
                 >= 0 => startGuthaben,
                 _ => throw new ArgumentOutOfRangeException("Der Betrag muss positiv oder 0 sein")
             }; 
->>>>>>> Jasten-Michaelo
         }
 
         //~Konto()
@@ -87,34 +78,6 @@ namespace Bank
             decimal betrag = Guthaben;
 
             Guthaben = 0;
-<<<<<<< HEAD
-
-            #region Muss überarbeitet werden
-            //IntPtr thisRef = IntPtr.Zero;
-
-            //try
-            //{
-            //    thisRef = Marshal.AllocHGlobal(Unsafe.SizeOf<Konto>());
-
-            //    Marshal.StructureToPtr(this, thisRef, true);
-            //}
-            //catch (AccessViolationException)
-            //{
-            //    return 0;
-            //}
-            //catch (OutOfMemoryException)
-            //{
-            //    return 0;
-            //}
-            //finally
-            //{
-            //    if (thisRef != IntPtr.Zero)
-            //    {
-            //        Marshal.FreeHGlobal(thisRef);
-            //    }
-            //} 
-            #endregion
-=======
 
             IntPtr thisRef = IntPtr.Zero;
 
@@ -142,7 +105,6 @@ namespace Bank
                     GC.Collect();
                 }
             }
->>>>>>> Jasten-Michaelo
 
             return betrag;
         }
