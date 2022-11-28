@@ -1,25 +1,27 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace Bank
 {
     [StructLayout(LayoutKind.Sequential)]
     public sealed class Konto
     {
-        public decimal Guthaben
+        public int guthaben
         {
             get;
             private set;
         }
 
-        public Konto(decimal startGuthaben = 0)
+        public Konto(int startGuthaben = 0)
         {
             checked
             {
-                Guthaben = startGuthaben switch
+                guthaben = startGuthaben switch
                 {
                     >= 0 => startGuthaben,
                     _ => throw new ArgumentOutOfRangeException("Der Betrag muss positiv oder 0 sein")
-                }; 
+                };
             }
         }
 
@@ -30,19 +32,19 @@ namespace Bank
         }
 
         [MethodImpl(MethodImplOptions.Synchronized)]
-        public void Einzahlen(decimal betrag)
+        public void Einzahlen(int betrag)
         {
             checked
             {
-                Guthaben += betrag;
+                guthaben += betrag;
             }
         }
 
         public void Auszahlen(decimal betrag)
         {
-            if (Guthaben - betrag < 0)
+            if (guthaben - betrag < 0)
             {
-                throw new ArgumentOutOfRangeException("Nicht genug Guthaben");
+                throw new ArgumentOutOfRangeException("Nicht genug guthaben");
             }
 
             if (betrag <= 0)
@@ -63,32 +65,6 @@ namespace Bank
             decimal betrag = Guthaben;
 
             Guthaben = 0;
-
-            #region Muss überarbeitet werden
-            //IntPtr thisRef = IntPtr.Zero;
-
-            //try
-            //{
-            //    thisRef = Marshal.AllocHGlobal(Unsafe.SizeOf<Konto>());
-
-            //    Marshal.StructureToPtr(this, thisRef, true);
-            //}
-            //catch (AccessViolationException)
-            //{
-            //    return 0;
-            //}
-            //catch (OutOfMemoryException)
-            //{
-            //    return 0;
-            //}
-            //finally
-            //{
-            //    if (thisRef != IntPtr.Zero)
-            //    {
-            //        Marshal.FreeHGlobal(thisRef);
-            //    }
-            //} 
-            #endregion
 
             return betrag;
         }
