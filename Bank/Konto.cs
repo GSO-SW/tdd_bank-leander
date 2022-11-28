@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -7,6 +8,9 @@ namespace Bank
     [StructLayout(LayoutKind.Sequential)]
     public sealed class Konto
     {
+        private static int kontoZaehler = 0;
+
+        public readonly int KontoNr;
         public decimal Guthaben
         {
             get;
@@ -15,21 +19,37 @@ namespace Bank
 
         public Konto(decimal startGuthaben = 0)
         {
-            checked
+            KontoNr = ++kontoZaehler;
+
+            //KontoNr = GetHashCode();
+
+            Guthaben = startGuthaben switch
             {
+<<<<<<< HEAD
                 Guthaben = startGuthaben switch
                 {
                     >= 0 => startGuthaben,
                     _ => throw new ArgumentOutOfRangeException("Der Betrag muss positiv oder 0 sein")
                 }; 
             }
+=======
+                >= 0 => startGuthaben,
+                _ => throw new ArgumentOutOfRangeException("Der Betrag muss positiv oder 0 sein")
+            }; 
+>>>>>>> Jasten-Michaelo
         }
+
+        //~Konto()
+        //{
+        //    kontoZaehler--;
+        //}
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Konto Eröffnen(decimal startGuthaben = 0)
         {
             return new Konto(startGuthaben);
         }
+
 
         [MethodImpl(MethodImplOptions.Synchronized)]
         public void Einzahlen(decimal betrag)
@@ -55,6 +75,8 @@ namespace Bank
             Einzahlen(-betrag);
         }
 
+
+        [MethodImpl(MethodImplOptions.Synchronized)]
         public decimal Schließen()
         {
             if (this is null)
@@ -65,6 +87,7 @@ namespace Bank
             decimal betrag = Guthaben;
 
             Guthaben = 0;
+<<<<<<< HEAD
 
             #region Muss überarbeitet werden
             //IntPtr thisRef = IntPtr.Zero;
@@ -91,6 +114,35 @@ namespace Bank
             //    }
             //} 
             #endregion
+=======
+
+            IntPtr thisRef = IntPtr.Zero;
+
+            try
+            {
+                thisRef = Marshal.AllocHGlobal(Marshal.SizeOf<Konto>());
+
+                Marshal.StructureToPtr(this, thisRef, false);
+                Marshal.DestroyStructure<Konto>(thisRef);
+            }
+            catch (AccessViolationException)
+            {
+                return 0;
+            }
+            catch (OutOfMemoryException)
+            {
+                return 0;
+            }
+            finally
+            {
+                if (thisRef != IntPtr.Zero)
+                {
+                    Marshal.FreeHGlobal(thisRef);
+
+                    GC.Collect();
+                }
+            }
+>>>>>>> Jasten-Michaelo
 
             return betrag;
         }
