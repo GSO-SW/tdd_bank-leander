@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 
 namespace Bank
 {
@@ -8,7 +9,6 @@ namespace Bank
         {
             // In dieser Datei muss eigentlich nichts bearbeitet werden. 
             // Wir brauchen nur Tests.
-            Console.WriteLine("Hello World");
         }
     }
 }
