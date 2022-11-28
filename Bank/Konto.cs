@@ -26,7 +26,7 @@ namespace Bank
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Konto Eröffnen(decimal startGuthaben = 0)
+        public static Konto Eröffnen(int startGuthaben = 0)
         {
             return new Konto(startGuthaben);
         }
@@ -40,7 +40,7 @@ namespace Bank
             }
         }
 
-        public void Auszahlen(decimal betrag)
+        public void Auszahlen(int betrag)
         {
             if (guthaben - betrag < 0)
             {
@@ -55,16 +55,16 @@ namespace Bank
             Einzahlen(-betrag);
         }
 
-        public decimal Schließen()
+        public int Schließen()
         {
             if (this is null)
             {
                 return 0;
             }
 
-            decimal betrag = Guthaben;
+            int betrag = guthaben;
 
-            Guthaben = 0;
+            guthaben = 0;
 
             return betrag;
         }
