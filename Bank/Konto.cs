@@ -45,8 +45,15 @@ namespace Bank
         [MethodImpl(MethodImplOptions.Synchronized)]
         public void Einzahlen(decimal betrag)
         {
+            decimal test = Guthaben;
+
             checked
             {
+                if (Guthaben + betrag < test)
+                {
+                    throw new ArgumentException("Man kann keinen negativen Betrag einzahlen");
+                }   
+
                 Guthaben += betrag;
             }
         }
