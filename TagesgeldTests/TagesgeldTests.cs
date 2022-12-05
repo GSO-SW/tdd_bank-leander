@@ -28,7 +28,7 @@ namespace TagesgeldTests
 
 
             // Act
-            t.Zinssatz = neuer_zinssatz;
+            t.Zinssatz = (decimal)neuer_zinssatz;
 
             // Assert
             Assert.AreEqual(neuer_zinssatz, t.Zinssatz);

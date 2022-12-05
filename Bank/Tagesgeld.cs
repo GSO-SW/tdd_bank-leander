@@ -28,9 +28,10 @@ namespace Bank
             }
         }
 
-        public Tagesgeld(Konto verrechnungsKonto)
+        public Tagesgeld(Konto verrechnungsKonto, decimal zinssatz = decimal.Zero)
         {
             this.verrechnungsKonto = verrechnungsKonto;
+            Zinssatz = zinssatz;
         }
 
         public void Einzahlen(decimal betrag)
